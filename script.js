@@ -20,6 +20,48 @@ var $fiveDay = $('#five-day');
 var $historyButtons = [];
 
 // Functions
+function retrieveStoredHistory() {
+
+    var checkExistingHistory = localStorage.getItem("citySearchHistory");
+    if (checkExistingHistory != null) {
+        $historyButtons = JSON.parse(checkExistingHistory);
+
+        $.each($historyButtons, function (i) {
+
+            // Create the button
+            var $newCity = $('<button>');
+            // Add the City Text
+            $newCity.text($historyButtons[i]);
+            // Set the Basic Button Styles
+            $newCity.attr("class", "history btn-lg btn-secondary w-100 text-left mb-2");
+            // Add the City Data to the Button
+            $newCity.data("city", $historyButtons[i]);
+            // Insert the Button to the History Div
+            $searchHistory.prepend($newCity);
+
+            // Check and add the Clear History Button
+            if (i === $historyButtons.length-1){
+
+                searchFunction($historyButtons[i])
+                clearHistoryButton();
+            }
+        })
+    }
+    // Otherwise, set to the default empty array
+    else {
+        $historyButtons = [];
+    }
+    // Console log the existing entries
+    console.log("[SYSTEM] Retrieving saved data: " + $historyButtons);
+}
+
+function updateStorage() {
+
+    var addHistory = JSON.stringify($historyButtons);
+    localStorage.setItem("citySearchHistory", addHistory);
+    console.log("[SYSTEM] Added to local storage: " + addHistory);
+}
+
 // Retrieve Users Search and Find
 function validateSearch() {
 
@@ -38,7 +80,7 @@ function validateSearch() {
     }
 }
 
-function displayLoading(){
+function displayLoading() {
 
     $cityName.html('<i class="fas fa-spinner fa-pulse"></i>');
     $theDate.html("");
@@ -67,7 +109,7 @@ function searchFunction(citySearch) {
         var $currentIcon = response.weather[0].icon;
 
         setCurrentCity(citySearch, $currentTemp, $currentHumidity, $currentWindSpeed, $currentIcon);
-        
+
         var $currentLat = response.coord.lat;
         var $currentLong = response.coord.lon;
 
@@ -84,7 +126,7 @@ function searchFunction(citySearch) {
     })
 }
 
-function getUV(theLat, theLong){
+function getUV(theLat, theLong) {
 
     var queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY;
 
@@ -95,23 +137,23 @@ function getUV(theLat, theLong){
 
         var $theUV = response.value;
 
-        if ($theUV <= 2){
+        if ($theUV <= 2) {
             $theRating = "low";
         }
-        else if ($theUV <= 5){
+        else if ($theUV <= 5) {
             $theRating = "medium";
         }
-        else if ($theUV <= 7){
+        else if ($theUV <= 7) {
             $theRating = "high";
         }
-        else if ($theUV <= 10){
+        else if ($theUV <= 10) {
             $theRating = "veryhigh";
         }
         else {
             $theRating = "extreme";
         }
 
-        $cityUV.html('UV Index: <span class='+$theRating+'>'+$theUV+"</span>");       
+        $cityUV.html('UV Index: <span class=' + $theRating + '>' + $theUV + "</span>");
 
     }).fail(function () {
         console.log("ERROR: Couldn't find the UV");
@@ -194,6 +236,9 @@ function addHistoryButton(which) {
 
         // Check and add the Clear History Button
         clearHistoryButton();
+
+        // Update the Local Storage
+        updateStorage();
     }
 }
 
@@ -204,6 +249,7 @@ function clearHistory() {
     $historyButtons = [];
     $searchHistory.empty();
     $theCity.css("display", "none");
+    updateStorage();
 }
 
 // Function to add the Clear History Button
@@ -220,7 +266,7 @@ function clearHistoryButton() {
         var $clearHistoryBtn = $('<button>');
         $clearHistoryBtn.text("Clear History");
         $clearHistoryBtn.attr("id", "clearHistory");
-        $clearHistoryBtn.attr("class", "btn-lg btn-dark");
+        $clearHistoryBtn.attr("class", "btn-lg btn-dark mb-3");
 
         // Add to the search history div
         $clearDiv.append($clearHistoryBtn);
@@ -231,10 +277,12 @@ function clearHistoryButton() {
 // Check the Document is Ready before Applying Code
 $(document).ready(function () {
 
+    retrieveStoredHistory();
+
     // City Search Button On Click
     $citySearchButton.on("click", validateSearch);
 
-    // City Saerch Field On Enter
+    // City Search Field On Enter
     $citySearchField.on("keydown", function (event) {
 
         // Check for Enter, run validateSearch
@@ -248,8 +296,8 @@ $(document).ready(function () {
 
     $(document).on("click", "#clearHistory", clearHistory);
 
-    $(document).on("click", ".history", function(){
-        
+    $(document).on("click", ".history", function () {
+
         var $whichHistory = $(this).data("city");
         searchFunction($whichHistory);
     })

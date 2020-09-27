@@ -5,6 +5,7 @@ html {
 body {
     padding-top: 88px;
     height: 100%;
+    
 }
 
 .container {
@@ -13,6 +14,12 @@ body {
 
 .search-area {
     background-color: #EEEEEE;
+}
+
+#search-history {
+    background-color: #EEEEEE;
+    padding: 15px;
+    margin: -15px;
 }
 
 #city-information {
