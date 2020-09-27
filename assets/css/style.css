@@ -19,6 +19,10 @@ body {
     /* display: none; */
 }
 
+#error {
+    display: none;
+}
+
 .rounded {
     border-radius: 0.6rem!important;
 }
