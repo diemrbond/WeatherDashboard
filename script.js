@@ -6,7 +6,8 @@ var $errorText = $('#error');
 
 // city-information
 
-
+// Variables & Arrays
+var $historyButtons = [];
 
 // Functions
 function searchFunction() {
@@ -41,6 +42,8 @@ function searchFunction() {
             console.log($currentWindSpeed);
             console.log($currentIcon);
 
+            addHistoryButton(citySearch);
+
             //http://openweathermap.org/img/wn/10d@2x.png
 
         }).fail(function () {
@@ -51,16 +54,40 @@ function searchFunction() {
 
 }
 
-function displayError(){
+function displayError() {
 
     $errorText.text("Sorry, we couldn't find the City.");
-    $errorText.css("display","block");
+    $errorText.css("display", "block");
 }
 
-function hideError(){
+function hideError() {
 
     $errorText.empty();
-    $errorText.css("display","none");
+    $errorText.css("display", "none");
+}
+
+function addHistoryButton(which) {
+
+    // Check if this button is already in the history
+    var $checkExists = $.inArray(which, $historyButtons);
+
+    // If the button doesn't already exist
+    if ($checkExists === -1) {
+
+        // Create the button
+        var $newCity = $('<button>');
+        // Add the City Text
+        $newCity.text(which);
+        // Set the Basic Button Styles
+        $newCity.attr("class", "btn-lg btn-secondary w-100 text-left mb-2");
+        // Add the City Data to the Button
+        $newCity.data("city", which);
+        // Insert the Button to the History Div
+        $searchHistory.prepend($newCity);
+        
+        // Add the City to the History Array
+        $historyButtons.push(which);
+    }
 }
 
 // <p class="lead">Search history:</p>
@@ -82,5 +109,5 @@ $(document).ready(function () {
             // Run searchFunction
             searchFunction();
         }
-    });
+    })
 })
