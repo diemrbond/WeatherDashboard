@@ -1,3 +1,24 @@
-body { 
-    padding-top: 88px; 
+html {
+    height: 100%;
+}
+
+body {
+    padding-top: 88px;
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+}
+
+.search-area {
+    background-color: #EEEEEE;
+}
+
+#search-history {
+    /* display: none; */
+}
+
+.rounded {
+    border-radius: 0.6rem!important;
 }

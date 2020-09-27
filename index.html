@@ -30,11 +30,13 @@
     </nav>
 
     <!-- Main Container -->
-    <section class="container-fluid">
-        <div class="row">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
             <!-- Search Area -->
-            <div class="col-4">
+            <div class="col-3 search-area h-100">
+                <!-- Spacer to knock the search bar down -->
                 <br />
+                <!-- Search button -->
                 <h3><label for="city-search">Search for a City</label></h3>
                 <div class="input-group">
                     <input class="form-control" type="text" placeholder="Search" aria-label="Search">
@@ -43,14 +45,66 @@
                                 class="fas fa-search text-light" aria-hidden="true"></i></span>
                     </div>
                 </div>
+                <!-- Search History -->
+                <div id="search-history" class="mt-4 lead">
+                    <p>Search history:</p>
+                </div>
             </div>
 
             <!-- Results Area -->
-            <div class="col-8">
-                Text
+            <div class="col-9">
+                <div class="jumbotron jumbotron-fluid bg-light">
+                    <div class="container">
+                        <h1 id="city-name" class="display-3">City Name</h1>
+                        <p class="lead">Temperature: </p>
+                        <p class="lead">Humidity: </p>
+                        <p class="lead">Wind Speed: </p>
+                        <p class="lead">UV Index: </p>
+                    </div>
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 mb-4 text-center">
+                            <h3>5 Day Forecast:</h3>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-between pl-5 pr-5">
+                        <div class="col-2 bg-primary p-5 rounded text-light">
+                            <h4>Date</h3>
+                            <p class="lead">Icon: </p>
+                            <p class="lead">Temp: </p>
+                            <p class="lead">Humidity: </p>
+                        </div>
+                        <div class="col-2 bg-primary p-5 rounded text-light">
+                            <h4>Date</h3>
+                            <p class="lead">Icon: </p>
+                            <p class="lead">Temp: </p>
+                            <p class="lead">Humidity: </p>
+                        </div>
+                        <div class="col-2 bg-primary p-5 rounded text-light">
+                            <h4>Date</h3>
+                            <p class="lead">Icon: </p>
+                            <p class="lead">Temp: </p>
+                            <p class="lead">Humidity: </p>
+                        </div>
+                        <div class="col-2 bg-primary p-5 rounded text-light">
+                            <h4>Date</h3>
+                            <p class="lead">Icon: </p>
+                            <p class="lead">Temp: </p>
+                            <p class="lead">Humidity: </p>
+                        </div>
+                        <div class="col-2 bg-primary p-5 rounded text-light">
+                            <h4>Date</h3>
+                            <p class="lead">Icon: </p>
+                            <p class="lead">Temp: </p>
+                            <p class="lead">Humidity: </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Bootstrap Components -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
