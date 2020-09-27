@@ -1,32 +1,48 @@
-// Query Selectors
+/////////////////////
+// Query Selectors //
+/////////////////////
 var $citySearchField = $('#city-search');
 var $citySearchButton = $('#city-search-btn');
 var $searchHistory = $('#search-history');
 var $errorText = $('#error');
 
-var $theCity = $('#city-information')
-var $cityName = $('#city-name');
-var $theDate = $('#date');
-var $cityTemp = $('#temperature');
-var $cityHumidity = $('#humidity');
-var $cityWind = $('#windspeed');
-var $cityUV = $('#uvindex');
+var $theCityEl = $('#city-information')
+var $cityNameEl = $('#city-name');
+var $theDateEl = $('#date');
+var $cityTempEl = $('#temperature');
+var $cityHumidityEl = $('#humidity');
+var $cityWindEl = $('#windspeed');
+var $cityUVEl = $('#uvindex');
 
-var $fiveDay = $('#five-day');
+var $fiveDayContainer = $('#five-day');
 var $fiveDayEl = $('#five-day-display');
 
-// city-information
-
-// Variables & Arrays
+////////////////////////
+// Variables & Arrays //
+////////////////////////
 var $historyButtons = [];
 
-// Functions
+///////////////
+// Functions //
+///////////////
+
+///////////////////
+// Local Storage //
+///////////////////
+
+// Function to retrieve the stored history
 function retrieveStoredHistory() {
 
-    var checkExistingHistory = localStorage.getItem("citySearchHistory");
-    if (checkExistingHistory != null) {
-        $historyButtons = JSON.parse(checkExistingHistory);
+    // Call to check for local storage
+    var $checkExistingHistory = localStorage.getItem("citySearchHistory");
 
+    // If the history isn't empty
+    if ($checkExistingHistory != null) {
+
+        // Set the history array to stored data
+        $historyButtons = JSON.parse($checkExistingHistory);
+
+        // Loop through each element of the array
         $.each($historyButtons, function (i) {
 
             // Create the button
@@ -43,7 +59,10 @@ function retrieveStoredHistory() {
             // Check and add the Clear History Button
             if (i === $historyButtons.length - 1) {
 
+                // Search for the most recent search
                 searchFunction($historyButtons[i])
+
+                // Add the Clear History Button
                 clearHistoryButton();
             }
         })
@@ -56,92 +75,146 @@ function retrieveStoredHistory() {
     console.log("[SYSTEM] Retrieving saved data: " + $historyButtons);
 }
 
+// Function to update the storage with latest search history
 function updateStorage() {
 
-    var addHistory = JSON.stringify($historyButtons);
-    localStorage.setItem("citySearchHistory", addHistory);
-    console.log("[SYSTEM] Added to local storage: " + addHistory);
+    // Stringify the $historyButtons
+    var $addHistory = JSON.stringify($historyButtons);
+    // Add to the local storage
+    localStorage.setItem("citySearchHistory", $addHistory);
+    // Console log the updated search history
+    console.log("[SYSTEM] Added to local storage: " + $addHistory);
 }
 
-// Retrieve Users Search and Find
+//////////////////////
+// Loading Messages //
+//////////////////////
+
+// Function to display the loading spinners and empty previous
+function displayLoading() {
+
+    // Clear the previous entries and add fake loader
+    $cityNameEl.html('<i class="fas fa-spinner fa-pulse"></i>');
+    $theDateEl.html("");
+    $cityTempEl.html("");
+    $cityHumidityEl.html("");
+    $cityWindEl.html("");
+    $cityUVEl.html("");
+
+    // Empty the 5 day forecast and hide
+    $fiveDayEl.empty();
+    $fiveDayContainer.css("display", "none");
+}
+
+// Function to display the fake preloaders for the 5 day forecast
+function displayLoaders() {
+
+    // Unhide the 5 day forecast
+    $fiveDayContainer.css("display", "block");
+    // Clear out existing 5 day forecast
+    $fiveDayEl.empty();
+
+    // Loop through 5 days
+    for (var i = 0; i < 5; i++) {
+
+        // Create empty divs with fake loaders
+        var $newDiv = $('<div>');
+        $newDiv.attr("class", "forecast col-2 bg-white p-5 rounded text-dark text-center");
+        $newDiv.html('<h4><i class="fas fa-spinner fa-pulse"></i></h4>')
+
+        // Add the fake loader div to the page
+        $fiveDayEl.append($newDiv);
+    }
+}
+
+/////////////////////
+// Validate Search //
+/////////////////////
+
+// Validate the Users Search
 function validateSearch() {
 
     // Hide the Error Message
     hideError();
 
     // Retrieve the current value from the search field
-    var citySearch = $citySearchField.val().trim();
-    console.log("Searching for: " + citySearch);
+    var $citySearch = $citySearchField.val().trim();
+    console.log("Searching for: " + $citySearch);
 
     // Make sure the search isn't empty
-    if (citySearch != "") {
+    if ($citySearch != "") {
 
         // Run the Search Function
-        searchFunction(citySearch);
+        searchFunction($citySearch);
     }
 }
 
-function displayLoading() {
+///////////////
+// API Calls //
+///////////////
 
-    $cityName.html('<i class="fas fa-spinner fa-pulse"></i>');
-    $theDate.html("");
-    $cityTemp.html("");
-    $cityHumidity.html("");
-    $cityWind.html("");
-    $cityUV.html("");
-
-    $fiveDayEl.empty();
-    $fiveDay.css("display", "none");
-}
-
+// Function to search for the entered city
 function searchFunction(citySearch) {
 
+    // Display loading messages
     displayLoading();
 
-    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&APPID=" + $APIKEY + "&units=metric";
+    // API Call
+    var $queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&APPID=" + $APIKEY + "&units=metric";
 
+    // Ajax Function
     $.ajax({
-        url: queryURL,
+        url: $queryURL,
         method: "GET"
     }).then(function (response) {
 
-        // console.log(response);
-
+        // Retrieve the responses
         var $currentTemp = response.main.temp;
         var $currentHumidity = response.main.humidity;
         var $currentWindSpeed = response.wind.speed;
         var $currentIcon = response.weather[0].icon;
 
+        // Set the current city
         setCurrentCity(citySearch, $currentTemp, $currentHumidity, $currentWindSpeed, $currentIcon);
 
+        // Retrieve the longitude and latitude of current city
         var $currentLat = response.coord.lat;
         var $currentLong = response.coord.lon;
 
+        // Retrieve the UV index
         getUV($currentLat, $currentLong);
+        // Retrieve the 5 day forecast
         getFiveDay($currentLat, $currentLong);
 
-        addHistoryButton(citySearch);
+        // Add the Search Button to History
+        addSearchButton(citySearch);
 
         // Remove Search from Field
         $citySearchField.val("");
 
     }).fail(function () {
+        // Display an error message if city not found
         console.log("ERROR: Couldn't find the City");
         displayError();
     })
 }
 
+// Function to retrieve the UV Index
 function getUV(theLat, theLong) {
 
-    var queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY;
+    // API Call
+    var $queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY;
 
+    // Ajax Function
     $.ajax({
-        url: queryURL,
+        url: $queryURL,
         method: "GET"
     }).then(function (response) {
 
+        // Retrieve the UV index
         var $theUV = response.value;
 
+        // Set the class dependent on the UV index
         if ($theUV <= 2) {
             $theRating = "low";
         }
@@ -158,123 +231,140 @@ function getUV(theLat, theLong) {
             $theRating = "extreme";
         }
 
-        $cityUV.html('UV Index: <span class=' + $theRating + '>' + $theUV + "</span>");
+        // Add the UV Index to the Current City
+        $cityUVEl.html('UV Index: <span class=' + $theRating + '>' + $theUV + "</span>");
 
     }).fail(function () {
         console.log("ERROR: Couldn't find the UV");
-        // displayError();
     })
 }
 
-function setCurrentCity(theCity, theTemp, theHumidity, theWindspeed, theIcon) {
-
-    // Unhide the City Block
-    $theCity.css("display", "block");
-
-    // Add the Text Elements
-    $cityName.text(theCity);
-    $cityTemp.html("Temperature: " + theTemp + "&deg;C");
-    $cityHumidity.text("Humidity: " + theHumidity + "%");
-    $cityWind.text("Wind Speed: " + theWindspeed + " KPH");
-    $cityUV.html('UV Index: <i class="fas fa-spinner fa-pulse"></i>');
-
-    // Get the Current Date
-    var $currentDate = moment().format('Do MMMM YYYY');
-    $theDate.text($currentDate);
-
-    // Create the icon and add to the city
-    var $newIcon = $('<img>');
-    var loadIcon = "http://openweathermap.org/img/wn/" + theIcon + "@2x.png";
-    $newIcon.attr("src", loadIcon);
-    $cityName.append($newIcon);
-}
-
+// Function to get the 5 day forecast
 function getFiveDay(theLat, theLong) {
 
-    $fiveDay.css("display", "block");
-    $fiveDayEl.empty();
+    // Add the fake preloaders
+    displayLoaders();
 
-    for (var i = 0; i < 5; i++) {
+    // API Call
+    var $queryURL = "https://api.openweathermap.org/data/2.5/onecall?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY + "&units=metric";
 
-        var $newDiv = $('<div>');
-        $newDiv.attr("class", "forecast col-2 bg-white p-5 rounded text-dark text-center");
-        $newDiv.html('<h4><i class="fas fa-spinner fa-pulse"></i></h4>')
-
-        $fiveDayEl.append($newDiv);
-
-    }
-
-    var queryURL = "https://api.openweathermap.org/data/2.5/onecall?lat="+theLat+"&lon="+theLong+"&appid=" + $APIKEY + "&units=metric";
-
+    // Ajax Function
     $.ajax({
-        url: queryURL,
+        url: $queryURL,
         method: "GET"
     }).then(function (response) {
 
-        console.log(response);
-
+        // Empty the fake preloaders
         $fiveDayEl.empty();
 
+        // Loop through for 5 days
         for (var i = 1; i < 6; i++) {
 
-            var $currentDate = moment().add(i, 'd');
+            // Create a new moment, i days in the future
+            var $currentDate = moment().add(i, 'd').format('D/MM/YYYY');
 
-            var $dayDate = $currentDate;
+            // Retrieve the responses
             var $dayIcon = response.daily[i].weather[0].icon;
             var $dayTemp = response.daily[i].temp.day;
             var $dayHumidity = response.daily[i].humidity;
 
+            // Create an empty div to hold the data
             var $newDiv = $('<div>');
             $newDiv.attr("class", "forecast col-2 bg-primary pl-5 pr-5 pt-4 rounded text-light text-center");
 
-            var $currentDate = moment($dayDate).format('D/MM/YYYY');
-
+            // Create a new H4 for the date
             var $newH4 = $('<h4>');
             $newH4.text($currentDate);
 
+            // Create a new icon image
             var $newIcon = $('<img>');
-            var loadIcon = "http://openweathermap.org/img/wn/" + $dayIcon + "@2x.png";
-            $newIcon.attr("src", loadIcon);
+            var $loadIcon = "http://openweathermap.org/img/wn/" + $dayIcon + "@2x.png";
+            $newIcon.attr("src", $loadIcon);
 
+            // Add the Temperature
             var $newP1 = $('<p>');
             $newP1.addClass("lead");
-            $newP1.html("Temp: "+$dayTemp + "&deg;C");
+            $newP1.html("Temp: " + $dayTemp + "&deg;C");
 
+            // Add the Humidity
             var $newP2 = $('<p>');
             $newP2.addClass("lead");
-            $newP2.text("Humidity: "+$dayHumidity+"%");
+            $newP2.text("Humidity: " + $dayHumidity + "%");
 
+            // Append to the 5 day forecast
             $newDiv.append($newH4);
             $newDiv.append($newIcon);
             $newDiv.append($newP1);
             $newDiv.append($newP2);
-
             $fiveDayEl.append($newDiv);
         }
 
     }).fail(function () {
         console.log("ERROR: Couldn't find the 5 Day Forecast");
-        // displayError();
     })
-
 }
+
+//////////////////////
+// Set Current City //
+//////////////////////
+
+// Function to Set the Current City
+function setCurrentCity(theCity, theTemp, theHumidity, theWindspeed, theIcon) {
+
+    // Unhide the City Block
+    $theCityEl.css("display", "block");
+
+    // Add the Text Elements
+    $cityNameEl.text(theCity);
+    $cityTempEl.html("Temperature: " + theTemp + "&deg;C");
+    $cityHumidityEl.text("Humidity: " + theHumidity + "%");
+    $cityWindEl.text("Wind Speed: " + theWindspeed + " KPH");
+    // Add a fake loader to the UV index while data is retrieved
+    $cityUVEl.html('UV Index: <i class="fas fa-spinner fa-pulse"></i>');
+
+    // Get the Current Date
+    var $currentDate = moment().format('Do MMMM YYYY');
+    $theDateEl.text($currentDate);
+
+    // Create the icon and add to the city
+    var $newIcon = $('<img>');
+    var $loadIcon = "http://openweathermap.org/img/wn/" + theIcon + "@2x.png";
+    $newIcon.attr("src", $loadIcon);
+    $cityNameEl.append($newIcon);
+}
+
+////////////////////
+// Error Messages //
+////////////////////
 
 // Display the Error Message
 function displayError() {
 
+    // Add the Error Message
     $errorText.text("Sorry, we couldn't find the City.");
     $errorText.css("display", "block");
-    $theCity.css("display", "none");
+
+    // Hide the previous City
+    $theCityEl.css("display", "none");
+
+    // Empty the 5 day forecast and hide
+    $fiveDayEl.empty();
+    $fiveDayContainer.css("display", "none");
 }
 
-// Hide the Error Message
+// Function to hide the Error Message
 function hideError() {
 
     $errorText.empty();
     $errorText.css("display", "none");
 }
 
-function addHistoryButton(which) {
+////////////////////
+// Search Buttons //
+////////////////////
+
+// Function to add a search button
+function addSearchButton(which) {
 
     // Check if this button is already in the history
     var $checkExists = $.inArray(which, $historyButtons);
@@ -317,13 +407,25 @@ function addHistoryButton(which) {
     }
 }
 
+//////////////////////////
+// Clear History Button //
+//////////////////////////
+
 // Function to clear the History
 function clearHistory() {
 
     // Remove all from the array and empty the div
     $historyButtons = [];
     $searchHistory.empty();
-    $theCity.css("display", "none");
+
+    // Hide the Current City Block
+    $theCityEl.css("display", "none");
+
+    // Empty the 5 day forecast and hide
+    $fiveDayEl.empty();
+    $fiveDayContainer.css("display", "none");
+
+    // Update the Local Storage to Empty
     updateStorage();
 }
 
@@ -349,9 +451,14 @@ function clearHistoryButton() {
     }
 }
 
+////////////////////
+// Document Start //
+////////////////////
+
 // Check the Document is Ready before Applying Code
 $(document).ready(function () {
 
+    // Check if there is existing searches
     retrieveStoredHistory();
 
     // City Search Button On Click
@@ -369,11 +476,15 @@ $(document).ready(function () {
         }
     })
 
+    // Clear History On Click
     $(document).on("click", "#clearHistory", clearHistory);
 
+    // History City Search Buttons On Click
     $(document).on("click", ".history", function () {
 
+        // Retrieve the City Data
         var $whichHistory = $(this).data("city");
+        // Search for the City
         searchFunction($whichHistory);
     })
 })
