@@ -15,6 +15,10 @@
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
+    <!-- Moment Install -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.28.0/moment.min.js"
+        integrity="sha512-Q1f3TS3vSt1jQ8AwP2OuenztnLU6LwxgyyYOG1jgMW/cbEMHps/3wjvnl1P3WTrF3chJUWEoxDUEjMxDV8pujg=="
+        crossorigin="anonymous"></script>
 
     <!-- Page Components -->
     <title>Weather Dashboard</title>
@@ -43,7 +47,7 @@
                     <div class="input-group-append">
                         <button class="input-group-text bg-primary" id="city-search-btn"><i
                                 class="fas fa-search text-light" aria-hidden="true"></i></button>
-                    </div>                    
+                    </div>
                 </div>
                 <!-- Error Message -->
                 <div id="error" class="pt-2 text-danger ml-1">Error</div>
@@ -56,6 +60,7 @@
                 <div class="jumbotron jumbotron-fluid bg-white" id="city-information">
                     <div class="container">
                         <h1 id="city-name" class="display-3">City Name</h1>
+                        <p id="date" class="lead"></p>
                         <p id="temperature" class="lead">Temperature: </p>
                         <p id="humidity" class="lead">Humidity: </p>
                         <p id="windspeed" class="lead">Wind Speed: </p>

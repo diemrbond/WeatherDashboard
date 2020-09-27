@@ -6,6 +6,7 @@ var $errorText = $('#error');
 
 var $theCity = $('#city-information')
 var $cityName = $('#city-name');
+var $theDate = $('#date');
 var $cityTemp = $('#temperature');
 var $cityHumidity = $('#humidity');
 var $cityWind = $('#windspeed');
@@ -37,7 +38,19 @@ function validateSearch() {
     }
 }
 
+function displayLoading(){
+
+    $cityName.html('<i class="fas fa-spinner fa-pulse"></i>');
+    $theDate.html("");
+    $cityTemp.html("");
+    $cityHumidity.html("");
+    $cityWind.html("");
+    $cityUV.html("");
+}
+
 function searchFunction(citySearch) {
+
+    displayLoading();
 
     var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&APPID=" + $APIKEY + "&units=metric";
 
@@ -54,12 +67,55 @@ function searchFunction(citySearch) {
         var $currentIcon = response.weather[0].icon;
 
         setCurrentCity(citySearch, $currentTemp, $currentHumidity, $currentWindSpeed, $currentIcon);
+        
+        var $currentLat = response.coord.lat;
+        var $currentLong = response.coord.lon;
+
+        getUV($currentLat, $currentLong);
 
         addHistoryButton(citySearch);
+
+        // Remove Search from Field
+        $citySearchField.val("");
 
     }).fail(function () {
         console.log("ERROR: Couldn't find the City");
         displayError();
+    })
+}
+
+function getUV(theLat, theLong){
+
+    var queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY;
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (response) {
+
+        var $theUV = response.value;
+
+        if ($theUV <= 2){
+            $theRating = "low";
+        }
+        else if ($theUV <= 5){
+            $theRating = "medium";
+        }
+        else if ($theUV <= 7){
+            $theRating = "high";
+        }
+        else if ($theUV <= 10){
+            $theRating = "veryhigh";
+        }
+        else {
+            $theRating = "extreme";
+        }
+
+        $cityUV.html('UV Index: <span class='+$theRating+'>'+$theUV+"</span>");       
+
+    }).fail(function () {
+        console.log("ERROR: Couldn't find the UV");
+        // displayError();
     })
 }
 
@@ -73,7 +129,11 @@ function setCurrentCity(theCity, theTemp, theHumidity, theWindspeed, theIcon) {
     $cityTemp.html("Temperature: " + theTemp + "&deg;C");
     $cityHumidity.text("Humidity: " + theHumidity + "%");
     $cityWind.text("Wind Speed: " + theWindspeed + " KPH");
-    $cityUV.text("UV Index: ");
+    $cityUV.html('UV Index: <i class="fas fa-spinner fa-pulse"></i>');
+
+    // Get the Current Date
+    var $currentDate = moment().format('Do MMMM YYYY');
+    $theDate.text($currentDate);
 
     // Create the icon and add to the city
     var $newIcon = $('<img>');
@@ -87,6 +147,7 @@ function displayError() {
 
     $errorText.text("Sorry, we couldn't find the City.");
     $errorText.css("display", "block");
+    $theCity.css("display", "none");
 }
 
 // Hide the Error Message
@@ -142,6 +203,7 @@ function clearHistory() {
     // Remove all from the array and empty the div
     $historyButtons = [];
     $searchHistory.empty();
+    $theCity.css("display", "none");
 }
 
 // Function to add the Clear History Button

@@ -27,10 +27,44 @@ body {
     display: none;
 
 }
+
+#date {
+    top: -25px;
+    position: relative;
+    font-style: italic;
+}
+
 #error {
     display: none;
 }
 
 .rounded {
     border-radius: 0.6rem!important;
+}
+
+.low, .medium, .high, .veryhigh, .extreme {
+    padding: 5px 10px 5px 10px;
+    border-radius: 0.6rem!important;
+}
+
+.low{
+    background-color: lightgreen;
+}
+
+.medium {
+    background-color: yellow;
+}
+
+.high {
+    background-color: orange;
+}
+
+.veryhigh {
+    background-color: red;
+    color: white;
+}
+
+.extreme {
+    background-color: purple;
+    color: white;
 }
