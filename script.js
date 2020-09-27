@@ -378,7 +378,7 @@ function addSearchButton(which) {
             // Find the last button
             var $findLast = $('#search-history').children().last().prev();
             // Find the last button in the history array
-            var $removeOld = $.inArray($removeLast.text(), $historyButtons);
+            var $removeOld = $.inArray($findLast.text(), $historyButtons);
             // Remove the old button from the array
             $historyButtons.splice($removeOld, 1);
             // Remove the last button
