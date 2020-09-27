@@ -13,6 +13,7 @@ var $cityWind = $('#windspeed');
 var $cityUV = $('#uvindex');
 
 var $fiveDay = $('#five-day');
+var $fiveDayEl = $('#five-day-display');
 
 // city-information
 
@@ -40,7 +41,7 @@ function retrieveStoredHistory() {
             $searchHistory.prepend($newCity);
 
             // Check and add the Clear History Button
-            if (i === $historyButtons.length-1){
+            if (i === $historyButtons.length - 1) {
 
                 searchFunction($historyButtons[i])
                 clearHistoryButton();
@@ -88,6 +89,9 @@ function displayLoading() {
     $cityHumidity.html("");
     $cityWind.html("");
     $cityUV.html("");
+
+    $fiveDayEl.empty();
+    $fiveDay.css("display", "none");
 }
 
 function searchFunction(citySearch) {
@@ -101,7 +105,7 @@ function searchFunction(citySearch) {
         method: "GET"
     }).then(function (response) {
 
-        console.log(response);
+        // console.log(response);
 
         var $currentTemp = response.main.temp;
         var $currentHumidity = response.main.humidity;
@@ -114,6 +118,7 @@ function searchFunction(citySearch) {
         var $currentLong = response.coord.lon;
 
         getUV($currentLat, $currentLong);
+        getFiveDay($currentLat, $currentLong);
 
         addHistoryButton(citySearch);
 
@@ -182,6 +187,76 @@ function setCurrentCity(theCity, theTemp, theHumidity, theWindspeed, theIcon) {
     var loadIcon = "http://openweathermap.org/img/wn/" + theIcon + "@2x.png";
     $newIcon.attr("src", loadIcon);
     $cityName.append($newIcon);
+}
+
+function getFiveDay(theLat, theLong) {
+
+    $fiveDay.css("display", "block");
+    $fiveDayEl.empty();
+
+    for (var i = 0; i < 5; i++) {
+
+        var $newDiv = $('<div>');
+        $newDiv.attr("class", "forecast col-2 bg-white p-5 rounded text-dark text-center");
+        $newDiv.html('<h4><i class="fas fa-spinner fa-pulse"></i></h4>')
+
+        $fiveDayEl.append($newDiv);
+
+    }
+
+    var queryURL = "https://api.openweathermap.org/data/2.5/onecall?lat="+theLat+"&lon="+theLong+"&appid=" + $APIKEY + "&units=metric";
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (response) {
+
+        console.log(response);
+
+        $fiveDayEl.empty();
+
+        for (var i = 1; i < 6; i++) {
+
+            var $currentDate = moment().add(i, 'd');
+
+            var $dayDate = $currentDate;
+            var $dayIcon = response.daily[i].weather[0].icon;
+            var $dayTemp = response.daily[i].temp.day;
+            var $dayHumidity = response.daily[i].humidity;
+
+            var $newDiv = $('<div>');
+            $newDiv.attr("class", "forecast col-2 bg-primary pl-5 pr-5 pt-4 rounded text-light text-center");
+
+            var $currentDate = moment($dayDate).format('D/MM/YYYY');
+
+            var $newH4 = $('<h4>');
+            $newH4.text($currentDate);
+
+            var $newIcon = $('<img>');
+            var loadIcon = "http://openweathermap.org/img/wn/" + $dayIcon + "@2x.png";
+            $newIcon.attr("src", loadIcon);
+
+            var $newP1 = $('<p>');
+            $newP1.addClass("lead");
+            $newP1.html("Temp: "+$dayTemp + "&deg;C");
+
+            var $newP2 = $('<p>');
+            $newP2.addClass("lead");
+            $newP2.text("Humidity: "+$dayHumidity+"%");
+
+            $newDiv.append($newH4);
+            $newDiv.append($newIcon);
+            $newDiv.append($newP1);
+            $newDiv.append($newP2);
+
+            $fiveDayEl.append($newDiv);
+        }
+
+    }).fail(function () {
+        console.log("ERROR: Couldn't find the 5 Day Forecast");
+        // displayError();
+    })
+
 }
 
 // Display the Error Message
