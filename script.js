@@ -10,6 +10,7 @@ var $errorText = $('#error');
 var $historyButtons = [];
 
 // Functions
+// Retrieve Users Search and Find
 function searchFunction() {
 
     // Hide the Error Message
@@ -54,12 +55,14 @@ function searchFunction() {
 
 }
 
+// Display the Error Message
 function displayError() {
 
     $errorText.text("Sorry, we couldn't find the City.");
     $errorText.css("display", "block");
 }
 
+// Hide the Error Message
 function hideError() {
 
     $errorText.empty();
@@ -74,24 +77,67 @@ function addHistoryButton(which) {
     // If the button doesn't already exist
     if ($checkExists === -1) {
 
+        // Check if the history count is at 10 or over
+        if ($historyButtons.length >= 10) {
+
+            // Find the last button
+            var $findLast = $('#search-history').children().last().prev();
+            // Find the last button in the history array
+            var $removeOld = $.inArray($removeLast.text(), $historyButtons);
+            // Remove the old button from the array
+            $historyButtons.splice($removeOld, 1);
+            // Remove the last button
+            $findLast.remove();
+        }
+
         // Create the button
         var $newCity = $('<button>');
         // Add the City Text
         $newCity.text(which);
         // Set the Basic Button Styles
-        $newCity.attr("class", "btn-lg btn-secondary w-100 text-left mb-2");
+        $newCity.attr("class", "history btn-lg btn-secondary w-100 text-left mb-2");
         // Add the City Data to the Button
         $newCity.data("city", which);
         // Insert the Button to the History Div
         $searchHistory.prepend($newCity);
-        
+
         // Add the City to the History Array
         $historyButtons.push(which);
+
+        // Check and add the Clear History Button
+        clearHistoryButton();
     }
 }
 
-// <p class="lead">Search history:</p>
+// Function to clear the History
+function clearHistory() {
 
+    // Remove all from the array and empty the div
+    $historyButtons = [];
+    $searchHistory.empty();
+}
+
+// Function to add the Clear History Button
+function clearHistoryButton() {
+
+    // Check if the Clear History Button has been created
+    if (!$("#clearHistory").length) {
+
+        // Create the Container Div
+        var $clearDiv = $('<div>');
+        $clearDiv.attr("class", "w-100 text-right");
+
+        // Create the Clear History Button
+        var $clearHistoryBtn = $('<button>');
+        $clearHistoryBtn.text("Clear History");
+        $clearHistoryBtn.attr("id", "clearHistory");
+        $clearHistoryBtn.attr("class", "btn-lg btn-dark");
+
+        // Add to the search history div
+        $clearDiv.append($clearHistoryBtn);
+        $searchHistory.append($clearDiv);
+    }
+}
 
 // Check the Document is Ready before Applying Code
 $(document).ready(function () {
@@ -110,4 +156,6 @@ $(document).ready(function () {
             searchFunction();
         }
     })
+
+    $(document).on("click", "#clearHistory", clearHistory);
 })
