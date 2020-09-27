@@ -15,10 +15,18 @@ body {
     background-color: #EEEEEE;
 }
 
-#search-history {
-    /* display: none; */
+#city-information {
+    display: none;
 }
 
+#city-name {
+    font-weight: 400;
+}
+
+#five-day {
+    display: none;
+
+}
 #error {
     display: none;
 }

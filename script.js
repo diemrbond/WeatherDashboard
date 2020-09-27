@@ -4,6 +4,15 @@ var $citySearchButton = $('#city-search-btn');
 var $searchHistory = $('#search-history');
 var $errorText = $('#error');
 
+var $theCity = $('#city-information')
+var $cityName = $('#city-name');
+var $cityTemp = $('#temperature');
+var $cityHumidity = $('#humidity');
+var $cityWind = $('#windspeed');
+var $cityUV = $('#uvindex');
+
+var $fiveDay = $('#five-day');
+
 // city-information
 
 // Variables & Arrays
@@ -11,7 +20,7 @@ var $historyButtons = [];
 
 // Functions
 // Retrieve Users Search and Find
-function searchFunction() {
+function validateSearch() {
 
     // Hide the Error Message
     hideError();
@@ -23,36 +32,54 @@ function searchFunction() {
     // Make sure the search isn't empty
     if (citySearch != "") {
 
-        var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&APPID=" + $APIKEY + "&units=metric";
-
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function (response) {
-
-            console.log(response);
-
-            var $currentTemp = response.main.temp;
-            var $currentHumidity = response.main.humidity;
-            var $currentWindSpeed = response.wind.speed;
-
-            var $currentIcon = response.weather[0].icon;
-
-            console.log($currentTemp);
-            console.log($currentHumidity);
-            console.log($currentWindSpeed);
-            console.log($currentIcon);
-
-            addHistoryButton(citySearch);
-
-            //http://openweathermap.org/img/wn/10d@2x.png
-
-        }).fail(function () {
-            console.log("ERROR: Couldn't find the City");
-            displayError();
-        })
+        // Run the Search Function
+        searchFunction(citySearch);
     }
+}
 
+function searchFunction(citySearch) {
+
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + citySearch + "&APPID=" + $APIKEY + "&units=metric";
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (response) {
+
+        console.log(response);
+
+        var $currentTemp = response.main.temp;
+        var $currentHumidity = response.main.humidity;
+        var $currentWindSpeed = response.wind.speed;
+        var $currentIcon = response.weather[0].icon;
+
+        setCurrentCity(citySearch, $currentTemp, $currentHumidity, $currentWindSpeed, $currentIcon);
+
+        addHistoryButton(citySearch);
+
+    }).fail(function () {
+        console.log("ERROR: Couldn't find the City");
+        displayError();
+    })
+}
+
+function setCurrentCity(theCity, theTemp, theHumidity, theWindspeed, theIcon) {
+
+    // Unhide the City Block
+    $theCity.css("display", "block");
+
+    // Add the Text Elements
+    $cityName.text(theCity);
+    $cityTemp.html("Temperature: " + theTemp + "&deg;C");
+    $cityHumidity.text("Humidity: " + theHumidity + "%");
+    $cityWind.text("Wind Speed: " + theWindspeed + " KPH");
+    $cityUV.text("UV Index: ");
+
+    // Create the icon and add to the city
+    var $newIcon = $('<img>');
+    var loadIcon = "http://openweathermap.org/img/wn/" + theIcon + "@2x.png";
+    $newIcon.attr("src", loadIcon);
+    $cityName.append($newIcon);
 }
 
 // Display the Error Message
@@ -143,19 +170,25 @@ function clearHistoryButton() {
 $(document).ready(function () {
 
     // City Search Button On Click
-    $citySearchButton.on("click", searchFunction);
+    $citySearchButton.on("click", validateSearch);
 
     // City Saerch Field On Enter
     $citySearchField.on("keydown", function (event) {
 
-        // Check for Enter, run searchFunction
+        // Check for Enter, run validateSearch
         if (event.key == "Enter") {
             // Prevent Page Refresh
             event.preventDefault();
-            // Run searchFunction
-            searchFunction();
+            // Run validateSearch
+            validateSearch();
         }
     })
 
     $(document).on("click", "#clearHistory", clearHistory);
+
+    $(document).on("click", ".history", function(){
+        
+        var $whichHistory = $(this).data("city");
+        searchFunction($whichHistory);
+    })
 })
