@@ -12,7 +12,9 @@
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
     <!-- Custom Stylesheets -->
-    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+
 
     <!-- Page Components -->
     <title>Weather Dashboard</title>
@@ -22,7 +24,33 @@
 
 <body>
 
-    
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-dark bg-dark">
+        <h1 class="navbar-text ml-auto mr-auto text-light">Weather Dashboard</h1>
+    </nav>
+
+    <!-- Main Container -->
+    <section class="container-fluid">
+        <div class="row">
+            <!-- Search Area -->
+            <div class="col-4">
+                <br />
+                <h3><label for="city-search">Search for a City</label></h3>
+                <div class="input-group">
+                    <input class="form-control" type="text" placeholder="Search" aria-label="Search">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-primary lighten-3" id="city-search"><i
+                                class="fas fa-search text-light" aria-hidden="true"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Area -->
+            <div class="col-8">
+                Text
+            </div>
+        </div>
+    </section>
 
     <!-- Bootstrap Components -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
@@ -38,8 +66,8 @@
         </script>
 
     <!-- jQuery Library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>   
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <!-- Custom jQuery -->
     <script src="./script.js"></script>
 
