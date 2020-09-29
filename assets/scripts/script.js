@@ -119,7 +119,7 @@ function displayLoaders() {
 
         // Create empty divs with fake loaders
         var $newDiv = $('<div>');
-        $newDiv.attr("class", "forecast col-2 bg-white p-5 rounded text-dark text-center");
+        $newDiv.attr("class", "forecast col-3 col-lg-2 bg-white p-5 rounded text-dark text-center");
         $newDiv.html('<h4><i class="fas fa-spinner fa-pulse"></i></h4>')
 
         // Add the fake loader div to the page
@@ -270,7 +270,7 @@ function getFiveDay(theLat, theLong) {
 
             // Create an empty div to hold the data
             var $newDiv = $('<div>');
-            $newDiv.attr("class", "forecast col-2 bg-primary pl-5 pr-5 pt-4 rounded text-light text-center");
+            $newDiv.attr("class", "forecast col-3 col-lg-2 bg-primary pl-5 pr-5 pt-4 rounded text-light text-center");
 
             // Create a new H4 for the date
             var $newH4 = $('<h4>');

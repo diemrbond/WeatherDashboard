@@ -37,7 +37,7 @@
     <div class="container-fluid h-100">
         <div class="row h-100">
             <!-- Search Area -->
-            <div id="res" class="col-3 search-area h-100">
+            <div id="res" class="col-12 col-md-4 col-lg-3 search-area h-sm-100">
                 <!-- Spacer to knock the search bar down -->
                 <br />
                 <!-- Search button -->
@@ -56,9 +56,9 @@
             </div>
 
             <!-- Results Area -->
-            <div class="col-9">
+            <div class="col-12 col-md-8 col-lg-9 mt-4 mt-md-0">
                 <div class="jumbotron jumbotron-fluid bg-white border mt-3 pt-4 pb-4" id="city-information">
-                    <div class="container">
+                    <div class="container ml-5 mr-5">
                         <h1 id="city-name" class="display-3">City Name</h1>
                         <p id="date" class="lead"></p>
                         <p id="temperature" class="lead">Temperature: </p>
@@ -74,7 +74,7 @@
                             <h3>5 Day Forecast:</h3>
                         </div>
                     </div>
-                    <div id="five-day-display" class="row d-flex justify-content-between pl-4 pr-4">                      
+                    <div id="five-day-display" class="row d-flex flex-wrap justify-content-center pl-4 pr-4">                      
                     </div>
                 </div>
             </div>
@@ -98,9 +98,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <!-- Hidden API keys -->
-    <script src="./keys.js"></script>
+    <script src="./assets/scripts/keys.js"></script>
     <!-- Custom jQuery -->
-    <script src="./script.js"></script>
+    <script src="./assets/scripts/script.js"></script>
 
 </body>
 

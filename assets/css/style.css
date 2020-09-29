@@ -32,7 +32,7 @@ body {
 
 #five-day {
     display: none;
-
+    margin-bottom: 50px;
 }
 
 #date {
@@ -78,4 +78,6 @@ body {
 
 .forecast {
     min-height: 265px;
+    min-width: 227px;
+    margin: 10px;
 }
