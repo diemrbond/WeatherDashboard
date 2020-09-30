@@ -203,7 +203,7 @@ function searchFunction(citySearch) {
 function getUV(theLat, theLong) {
 
     // API Call
-    var $queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY;
+    var $queryURL = "https://api.openweathermap.org/data/2.5/uvi?lat=" + theLat + "&lon=" + theLong + "&appid=" + $APIKEY;
 
     // Ajax Function
     $.ajax({
@@ -278,7 +278,7 @@ function getFiveDay(theLat, theLong) {
 
             // Create a new icon image
             var $newIcon = $('<img>');
-            var $loadIcon = "http://openweathermap.org/img/wn/" + $dayIcon + "@2x.png";
+            var $loadIcon = "https://openweathermap.org/img/wn/" + $dayIcon + "@2x.png";
             $newIcon.attr("src", $loadIcon);
 
             // Add the Temperature
@@ -328,7 +328,7 @@ function setCurrentCity(theCity, theTemp, theHumidity, theWindspeed, theIcon) {
 
     // Create the icon and add to the city
     var $newIcon = $('<img>');
-    var $loadIcon = "http://openweathermap.org/img/wn/" + theIcon + "@2x.png";
+    var $loadIcon = "https://openweathermap.org/img/wn/" + theIcon + "@2x.png";
     $newIcon.attr("src", $loadIcon);
     $cityNameEl.append($newIcon);
 }
