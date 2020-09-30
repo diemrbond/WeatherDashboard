@@ -1,3 +1,4 @@
+/* Basic Page Styles */
 html {
     height: 100%;
 }
@@ -5,13 +6,13 @@ html {
 body {
     padding-top: 88px;
     height: 100%;
-    
 }
 
 .container {
     height: 100%;
 }
 
+/* Search Area Styles */
 .search-area {
     background-color: #EEEEEE;
 }
@@ -22,17 +23,19 @@ body {
     margin: -15px;
 }
 
+#error {
+    display: none;
+}
+
+/* City Information Panel */
 #city-information {
     display: none;
 }
 
 #city-name {
     font-weight: 400;
-}
-
-#five-day {
-    display: none;
-    margin-bottom: 50px;
+    word-break: break-all;
+    max-width: 90%;
 }
 
 #date {
@@ -41,12 +44,21 @@ body {
     font-style: italic;
 }
 
-#error {
+/* Five Day Forecast Styles */
+#five-day {
     display: none;
+    margin-bottom: 50px;
 }
 
+.forecast {
+    min-height: 265px;
+    min-width: 227px;
+    margin: 10px;
+}
+
+/* UV Index Styles */
 .rounded {
-    border-radius: 0.6rem!important;
+    border-radius: 0.6rem !important;
 }
 
 .low, .medium, .high, .veryhigh, .extreme {
@@ -54,7 +66,7 @@ body {
     border-radius: 0.6rem!important;
 }
 
-.low{
+.low {
     background-color: lightgreen;
 }
 
@@ -74,10 +86,4 @@ body {
 .extreme {
     background-color: purple;
     color: white;
-}
-
-.forecast {
-    min-height: 265px;
-    min-width: 227px;
-    margin: 10px;
 }
